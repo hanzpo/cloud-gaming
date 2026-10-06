@@ -35,7 +35,7 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 
 | Setting | Value | plist key |
 |---|---|---|
-| Resolution | 3024×1890 (16:10, the MacBook screen minus the notch) | `width`, `height` |
+| Resolution | 1920×1200 (16:10; 3024×1890 costs latency and bitrate) | `width`, `height` |
 | FPS | 120 | `fps` |
 | Bitrate | 40 Mbps, no auto-adjust | `bitrate`, `autoadjustbitrate` |
 | Codec | AV1 | `videocfg = 4` |
@@ -67,6 +67,7 @@ To restore: create a volume from a snapshot in the instance's AZ, stop the insta
 - **ViGEmBus refuses Windows Server.** Its MSI LaunchCondition blocks Server, and its updater scheduled task fails under SYSTEM. `setup.ps1` captures the MSI mid-install and reruns the installer with a transform that drops both.
 - **Empty stream window.** The NVIDIA driver exposes its own display, so Apollo captured an empty secondary screen. Fixed with `dd_configuration_option = ensure_only_display`.
 - **No audio device on EC2.** Steam no longer ships Steam Streaming Speakers in the client. Apollo installs them on the first stream; VB-Cable is installed so a playback device always exists.
+- **Blurry, oversized UI.** The NVIDIA driver's own display is fixed at 1280×800 and Apollo can't change its mode (`failed to set display mode`). `headless_mode = enabled` makes every session use Apollo's virtual display at the client's resolution.
 - **Apollo web UI 403.** By default it only allows LAN origins; `origin_web_ui_allowed = wan` is safe because only the tailnet can reach it.
 - **Public ports.** Only UDP 41641 (Tailscale direct) and the BMS installer's BitTorrent ports (TCP 36881-36999, UDP 6881-6999) are open. Moonlight, Apollo and RDP are reachable only over Tailscale.
 - **BMS torrents stall at 0 peers** without those inbound ports, since the few seeders of add-ons like 16K terrain are also unreachable. A partial download (0-byte `.dds` in `Photoreal\16K`) crashes BMS in `ResourceManager::onCreateDevice` when a mission loads; rename the folder until it completes.

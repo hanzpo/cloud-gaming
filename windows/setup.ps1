@@ -50,6 +50,7 @@ Start-Process C:\gaming\Apollo.exe -ArgumentList '/S' -Wait
   'origin_web_ui_allowed = wan'           # web UI is only reachable over Tailscale anyway
   'sunshine_name = gaming-pc'
   'dd_configuration_option = ensure_only_display' # stream the virtual display, not an empty second screen
+  'headless_mode = enabled'               # always stream Apollo's virtual display; the NVIDIA display is stuck at 1280x800
   'gamepad = x360'                        # Xbox controller so games (BMS) use XInput, even for a DS4-mode pad
 ) | Add-Content "$Apollo\config\sunshine.conf"
 New-NetFirewallRule -DisplayName 'Apollo TCP' -Direction Inbound -Protocol TCP -LocalPort 47984, 47989, 47990, 48010 -Action Allow | Out-Null
