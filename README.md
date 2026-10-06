@@ -37,10 +37,10 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 |---|---|---|
 | Resolution | 3024×1890 (16:10, the MacBook screen minus the notch) | `width`, `height` |
 | FPS | 120 | `fps` |
-| Bitrate | 150 Mbps, unlocked, no auto-adjust | `bitrate`, `unlockbitrate`, `autoadjustbitrate` |
+| Bitrate | 40 Mbps, no auto-adjust | `bitrate`, `autoadjustbitrate` |
 | Codec | AV1 | `videocfg = 4` |
 | Window | Borderless fullscreen | `windowmode = 1` |
-| V-Sync, frame pacing | On | `vsync`, `framepacing` |
+| V-Sync, frame pacing | Off (each costs about a frame of latency) | `vsync`, `framepacing` |
 | Mouse | Game (raw relative) mode, not "optimize for remote desktop"; ⌃⌥⇧M toggles mid-stream | `mouseacceleration = false` |
 
 Quit Moonlight before editing the plist, or it overwrites the changes on exit.
