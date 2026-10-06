@@ -67,6 +67,7 @@ To restore: create a volume from a snapshot in the instance's AZ, stop the insta
 - **ViGEmBus refuses Windows Server.** Its MSI LaunchCondition blocks Server, and its updater scheduled task fails under SYSTEM. `setup.ps1` captures the MSI mid-install and reruns the installer with a transform that drops both.
 - **Empty stream window.** The NVIDIA driver exposes its own display, so Apollo captured an empty secondary screen. Fixed with `dd_configuration_option = ensure_only_display`.
 - **No audio device on EC2.** Steam no longer ships Steam Streaming Speakers in the client. Apollo installs them on the first stream; VB-Cable is installed so a playback device always exists.
+- **Controller not detected in Xbox mode.** Windows Server lacks the Xbox 360 driver, so the virtual pad shows error 28 (no driver). `setup.ps1` installs Microsoft's `xusb21` from the Update Catalog.
 - **Blurry, oversized UI.** The NVIDIA driver's own display is fixed at 1280×800 and Apollo can't change its mode (`failed to set display mode`). `headless_mode = enabled` makes every session use Apollo's virtual display at the client's resolution.
 - **Apollo web UI 403.** By default it only allows LAN origins; `origin_web_ui_allowed = wan` is safe because only the tailnet can reach it.
 - **Public ports.** Only UDP 41641 (Tailscale direct) and the BMS installer's BitTorrent ports (TCP 36881-36999, UDP 6881-6999) are open. Moonlight, Apollo and RDP are reachable only over Tailscale.

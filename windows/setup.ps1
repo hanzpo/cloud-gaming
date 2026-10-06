@@ -91,6 +91,14 @@ $o = $wi.GetType().InvokeMember('OpenDatabase', 'InvokeMethod', $null, $wi, @($o
 $p = Start-Process $vigemExe -ArgumentList '/quiet', '/norestart', 'TRANSFORMS="C:\gaming\vigem.mst"' -Wait -PassThru
 if ($p.ExitCode -ne 0) { throw "ViGEmBus install failed: $($p.ExitCode)" }
 
+# Windows Server has no Xbox 360 controller driver (xusb), so ViGEm's virtual
+# X360 pad shows up with error 28. Install Microsoft's signed xusb21 from the
+# Update Catalog.
+Invoke-WebRequest 'https://catalog.s.download.windowsupdate.com/msdownload/update/driver/drvs/2013/01/20289581_7385d6be1b053a35955a910f11436729a1d4cb56.cab' -OutFile C:\gaming\xusb21.cab
+New-Item -ItemType Directory -Force C:\gaming\xusb | Out-Null
+expand.exe C:\gaming\xusb21.cab -F:* C:\gaming\xusb | Out-Null
+pnputil /add-driver C:\gaming\xusb\xusb21.inf /install | Out-Null
+
 # --- Audio ---------------------------------------------------------------------
 # EC2 has no audio device. Apollo installs Steam Streaming Speakers on the first
 # stream; VB-Cable makes sure a default playback device exists before that.
