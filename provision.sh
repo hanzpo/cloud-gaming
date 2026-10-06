@@ -68,10 +68,10 @@ aws ec2 associate-address --allocation-id "$ALLOC" --instance-id "$IID" >/dev/nu
 # Backup idle stop. The primary idle check runs on the instance (idle.ps1), since
 # CloudWatch can't attach EC2 stop actions to a metric-math (in+out) alarm.
 aws cloudwatch put-metric-alarm --alarm-name "$NAME-idle-stop-backup" \
-  --alarm-description "Backup: stop $NAME after 2h of near-zero outbound traffic" \
+  --alarm-description "Backup: stop $NAME after 6h of near-zero outbound traffic" \
   --namespace AWS/EC2 --metric-name NetworkOut --dimensions Name=InstanceId,Value="$IID" \
   --statistic Sum --period 300 --threshold 5000000 --comparison-operator LessThanThreshold \
-  --evaluation-periods 24 --datapoints-to-alarm 24 --treat-missing-data notBreaching \
+  --evaluation-periods 72 --datapoints-to-alarm 72 --treat-missing-data notBreaching \
   --alarm-actions "arn:aws:automate:$AWS_REGION:ec2:stop"
 
 # Weekly C: snapshots (Mondays 09:00 UTC), keep the last 4

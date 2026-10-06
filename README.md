@@ -27,7 +27,7 @@ gpc ui            # Apollo web UI; copies the password to the clipboard
 gpc rdp-password  # Windows Administrator password
 ```
 
-The instance stops itself after 30 min of <25MB/5min network traffic (`windows/idle.ps1`), with a CloudWatch backup alarm that stops it after 2h of near-zero NetworkOut.
+The instance stops itself after 30 min with no streaming, downloading, disk writes or CPU load (`windows/idle.ps1`), with a CloudWatch backup alarm that stops it after 6h of near-zero NetworkOut. Long installs (for example DCS unpacking at about 50MB/s with no network traffic) count as busy.
 
 ## Moonlight settings
 
