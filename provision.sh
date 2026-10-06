@@ -74,4 +74,14 @@ aws cloudwatch put-metric-alarm --alarm-name "$NAME-idle-stop-backup" \
   --evaluation-periods 24 --datapoints-to-alarm 24 --treat-missing-data notBreaching \
   --alarm-actions "arn:aws:automate:$AWS_REGION:ec2:stop"
 
+# Weekly C: snapshots (Mondays 09:00 UTC), keep the last 4
+aws dlm create-default-role --resource-type snapshot >/dev/null 2>&1 || true
+DLM_ROLE=$(aws iam get-role --role-name AWSDataLifecycleManagerDefaultRole --query Role.Arn --output text)
+aws dlm create-lifecycle-policy --description "$NAME weekly snapshots keep 4" --state ENABLED \
+  --execution-role-arn "$DLM_ROLE" --tags Project=cloud-gaming \
+  --policy-details "{\"PolicyType\":\"EBS_SNAPSHOT_MANAGEMENT\",\"ResourceTypes\":[\"VOLUME\"],
+    \"TargetTags\":[{\"Key\":\"Name\",\"Value\":\"$NAME-c\"}],
+    \"Schedules\":[{\"Name\":\"weekly\",\"CopyTags\":true,\"TagsToAdd\":[{\"Key\":\"Project\",\"Value\":\"cloud-gaming\"}],
+      \"CreateRule\":{\"CronExpression\":\"cron(0 9 ? * MON *)\"},\"RetainRule\":{\"Count\":4}}]}" >/dev/null
+
 echo "Done. Next: run setup.ps1 on $IID (see README), then update IID in gpc."

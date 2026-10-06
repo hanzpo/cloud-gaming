@@ -56,6 +56,12 @@ Quit Moonlight before editing the plist, or it overwrites the changes on exit.
 
 Restoring from a snapshot (see Backups) skips steps 3–6.
 
+## Backups
+
+A Data Lifecycle Manager policy (`policy-072f11f3cabae3343`) snapshots the C: volume (tag `Name=gaming-pc-c`) every Monday at 09:00 UTC and keeps the last 4. Snapshots are incremental, about $0.05/GB-month for used blocks.
+
+To restore: create a volume from a snapshot in the instance's AZ, stop the instance, detach the current root volume, attach the restored one as `/dev/sda1`, and start. Games, saves and keybinds all come back.
+
 ## Gotchas
 
 - **ViGEmBus refuses Windows Server.** Its MSI LaunchCondition blocks Server, and its updater scheduled task fails under SYSTEM. `setup.ps1` captures the MSI mid-install and reruns the installer with a transform that drops both.
