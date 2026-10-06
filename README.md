@@ -41,7 +41,7 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 | Codec | AV1 | `videocfg = 4` |
 | Window | Borderless fullscreen | `windowmode = 1` |
 | V-Sync, frame pacing | On | `vsync`, `framepacing` |
-| Mouse | Remote-desktop (absolute) mode; ⌃⌥⇧M toggles for shooters | `mouseacceleration` |
+| Mouse | Game (raw relative) mode, not "optimize for remote desktop"; ⌃⌥⇧M toggles mid-stream | `mouseacceleration = false` |
 
 Quit Moonlight before editing the plist, or it overwrites the changes on exit.
 
