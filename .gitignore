@@ -1,0 +1,6 @@
+# secrets: never commit
+*.pem
+*.key
+sunshine_state.json
+credentials*
+.env
