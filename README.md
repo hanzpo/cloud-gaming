@@ -35,15 +35,15 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 
 | Setting | Value | plist key |
 |---|---|---|
-| Resolution | 1920×1200 (16:10; 3024×1890 costs latency and bitrate) | `width`, `height` |
+| Resolution | 2560×1600 (16:10; 3024×1890 needs ~100 Mbps and a gigabit link) | `width`, `height` |
 | FPS | 120 | `fps` |
-| Bitrate | 40 Mbps, no auto-adjust | `bitrate`, `autoadjustbitrate` |
+| Bitrate | 60 Mbps, no auto-adjust | `bitrate`, `autoadjustbitrate` |
 | Codec | AV1 | `videocfg = 4` |
 | Window | Borderless fullscreen | `windowmode = 1` |
 | V-Sync, frame pacing | Off (each costs about a frame of latency) | `vsync`, `framepacing` |
 | Mouse | Game (raw relative) mode, not "optimize for remote desktop"; ⌃⌥⇧M toggles mid-stream | `mouseacceleration = false` |
 
-Quit Moonlight before editing the plist, or it overwrites the changes on exit.
+Quit Moonlight before editing the plist, or it overwrites the changes on exit. After changing resolution, use Quit App on Desktop in Moonlight; a plain reconnect resumes the old session at the old size.
 
 ## Rebuild from scratch
 
