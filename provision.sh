@@ -36,12 +36,15 @@ aws ec2 create-key-pair --key-name cloud-gaming --key-type rsa \
 chmod 600 "$KEY_PATH"
 
 # Security group: nothing public except Tailscale's WireGuard port, which keeps
-# tailnet connections direct instead of relayed. Moonlight/Apollo go over Tailscale.
+# tailnet connections direct instead of relayed, and the BMS installer's
+# BitTorrent ports. Moonlight/Apollo go over Tailscale.
 VPC=$(aws ec2 describe-vpcs --filters Name=is-default,Values=true --query 'Vpcs[0].VpcId' --output text)
 SG=$(aws ec2 create-security-group --group-name cloud-gaming --description "Cloud gaming PC (Moonlight)" \
   --vpc-id "$VPC" --tag-specifications "ResourceType=security-group,Tags=[$TAGS]" --query GroupId --output text)
 aws ec2 authorize-security-group-ingress --group-id "$SG" --ip-permissions \
-  'IpProtocol=udp,FromPort=41641,ToPort=41641,IpRanges=[{CidrIp=0.0.0.0/0,Description=tailscale-direct}]' >/dev/null
+  'IpProtocol=udp,FromPort=41641,ToPort=41641,IpRanges=[{CidrIp=0.0.0.0/0,Description=tailscale-direct}]' \
+  'IpProtocol=tcp,FromPort=36881,ToPort=36999,IpRanges=[{CidrIp=0.0.0.0/0,Description=bms-bittorrent}]' \
+  'IpProtocol=udp,FromPort=6881,ToPort=6999,IpRanges=[{CidrIp=0.0.0.0/0,Description=bms-bittorrent-dht}]' >/dev/null
 
 # Instance: Windows Server 2022 (the NVIDIA cloud gaming driver targets it)
 AMI=$(aws ssm get-parameter --name /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base \

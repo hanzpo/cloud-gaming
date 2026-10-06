@@ -68,7 +68,9 @@ To restore: create a volume from a snapshot in the instance's AZ, stop the insta
 - **Empty stream window.** The NVIDIA driver exposes its own display, so Apollo captured an empty secondary screen. Fixed with `dd_configuration_option = ensure_only_display`.
 - **No audio device on EC2.** Steam no longer ships Steam Streaming Speakers in the client. Apollo installs them on the first stream; VB-Cable is installed so a playback device always exists.
 - **Apollo web UI 403.** By default it only allows LAN origins; `origin_web_ui_allowed = wan` is safe because only the tailnet can reach it.
-- **Public ports.** Only UDP 41641 (Tailscale direct) is open. Moonlight, Apollo and RDP are reachable only over Tailscale.
+- **Public ports.** Only UDP 41641 (Tailscale direct) and the BMS installer's BitTorrent ports (TCP 36881-36999, UDP 6881-6999) are open. Moonlight, Apollo and RDP are reachable only over Tailscale.
+- **BMS torrents stall at 0 peers** without those inbound ports, since the few seeders of add-ons like 16K terrain are also unreachable. A partial download (0-byte `.dds` in `Photoreal\16K`) crashes BMS in `ResourceManager::onCreateDevice` when a mission loads; rename the folder until it completes.
+- **.NET 3.5** can't be added through Windows Features on Server; `setup.ps1` installs it with `Install-WindowsFeature`.
 - **Reddit blocks AWS IPs.** Browse on the Mac instead.
 - **Slow game installs.** Defender real-time scanning throttled DCS unpacking, so game folders and updaters are excluded. Downloads from Steam reach about 2.6 Gbps; the disk was the bottleneck at 600MB/s.
 

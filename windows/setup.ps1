@@ -28,6 +28,8 @@ Invoke-WebRequest -Uri 'https://nvidia-gaming.s3.amazonaws.com/GridSwCert-Archiv
 Set-Service Audiosrv -StartupType Automatic
 Set-Service AudioEndpointBuilder -StartupType Automatic
 Install-WindowsFeature Server-Media-Foundation | Out-Null
+# Some game installers/launchers need .NET 3.5; the Windows Features dialog can't add it on Server
+Install-WindowsFeature NET-Framework-Core | Out-Null
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c # High performance
 powercfg /change monitor-timeout-ac 0
 Disable-ScheduledTask -TaskName ServerManager -TaskPath '\Microsoft\Windows\Server Manager\' -ErrorAction SilentlyContinue | Out-Null
@@ -51,6 +53,9 @@ Start-Process C:\gaming\Apollo.exe -ArgumentList '/S' -Wait
 ) | Add-Content "$Apollo\config\sunshine.conf"
 New-NetFirewallRule -DisplayName 'Apollo TCP' -Direction Inbound -Protocol TCP -LocalPort 47984, 47989, 47990, 48010 -Action Allow | Out-Null
 New-NetFirewallRule -DisplayName 'Apollo UDP' -Direction Inbound -Protocol UDP -LocalPort 47998-48010 -Action Allow | Out-Null
+# BMS installer's aria2 torrents (listen-port 36881-36999, DHT 6881-6999): without inbound, niche torrents find no peers
+New-NetFirewallRule -DisplayName 'BMS BitTorrent TCP' -Direction Inbound -Protocol TCP -LocalPort 36881-36999 -Action Allow | Out-Null
+New-NetFirewallRule -DisplayName 'BMS BitTorrent UDP' -Direction Inbound -Protocol UDP -LocalPort 6881-6999 -Action Allow | Out-Null
 
 # --- ViGEmBus (virtual gamepad) ------------------------------------------------
 # The bundled installer's MSI has a LaunchCondition that rejects Windows Server,
