@@ -10,7 +10,7 @@ A Windows GPU instance on AWS, streamed to the MacBook with Moonlight over Tails
 | Type | g6e.4xlarge: NVIDIA L40S 48GB, 16 vCPU (EPYC 7R13), 128GB RAM |
 | Disk | 1TB gp3, 16000 IOPS, 2000MB/s (the instance caps EBS at 1000MB/s), `DeleteOnTermination=false` |
 | OS | Windows Server 2022 |
-| Network | Tailscale `gaming-pc` (100.106.1.28); Elastic IP 52.204.43.160 |
+| Network | Tailscale `gaming-pc`; Elastic IP |
 | AWS profile | `m5mbp` (`aws login --profile m5mbp --remote`) |
 
 g7e (RTX PRO 6000 Blackwell) is the preferred type, but it was sold out in us-east-1 at build time. us-east-1a offers g7e, so upgrading is a stop → `modify-instance-attribute --instance-type g7e.4xlarge` → start. To avoid losing the slot to a capacity error, create a short On-Demand Capacity Reservation in us-east-1a first and cancel it once the instance is running.
