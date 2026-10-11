@@ -6,14 +6,14 @@ A Windows GPU instance on AWS, streamed to the MacBook with Moonlight over Tails
 
 | | |
 |---|---|
-| Instance | `i-077325cb934a34acc` (`gaming-pc`), us-east-1a |
+| Instance | `i-038761e72015ad082` (`gaming-pc`), us-east-2a |
 | Type | g6e.4xlarge: NVIDIA L40S 48GB, 16 vCPU (EPYC 7R13), 128GB RAM |
-| Disk | 1TB gp3, 16000 IOPS, 2000MB/s (the instance caps EBS at 1000MB/s), `DeleteOnTermination=false` |
+| Disk | 1250GB gp3, 16000 IOPS, 1000MB/s, `DeleteOnTermination=false` |
 | OS | Windows Server 2022 |
 | Network | Tailscale `gaming-pc`; Elastic IP |
 | AWS profile | `m5mbp` (`aws login --profile m5mbp --remote`) |
 
-g7e (RTX PRO 6000 Blackwell) is the preferred type, but it was sold out in us-east-1 at build time. us-east-1a offers g7e, so upgrading is a stop → `modify-instance-attribute --instance-type g7e.4xlarge` → start. To avoid losing the slot to a capacity error, create a short On-Demand Capacity Reservation in us-east-1a first and cancel it once the instance is running.
+`gpc start` tries instance types in order (`TYPES` in `gpc`) and keeps the first with capacity: g6e.4xlarge first, then the Blackwell g7e/g7 types, then smaller and older GPUs. It only changes the type when the instance is stopped.
 
 ## Daily use
 
@@ -80,7 +80,7 @@ To restore: create a volume from a snapshot in the instance's AZ, stop the insta
 
 - Instance: $3.74/hr (Windows included)
 - Egress: $0.09/GB, roughly $5–7/hr total at 80–150 Mbps
-- Disk + EIP: about $225/mo, even when stopped (1TB plus provisioned IOPS and throughput)
+- Disk + EIP: about $245/mo, even when stopped (1250GB plus provisioned IOPS and throughput)
 
 ## Secrets (never in this repo)
 
