@@ -25,6 +25,7 @@ gpc stop          # shut down (the disk still bills)
 gpc status
 gpc ui            # Apollo web UI; copies the password to the clipboard
 gpc rdp-password  # Windows Administrator password
+gpc vr            # stream SteamVR to a Quest plugged into the Mac (see VR)
 ```
 
 The instance stops itself after 30 min with no streaming, downloading, disk writes or CPU load (`windows/idle.ps1`), with a CloudWatch backup alarm that stops it after 6h of near-zero NetworkOut. Long installs (for example DCS unpacking at about 50MB/s with no network traffic) count as busy.
@@ -44,6 +45,20 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 | Mouse | Game (raw relative) mode, not "optimize for remote desktop"; ⌃⌥⇧M toggles mid-stream | `mouseacceleration = false` |
 
 Quit Moonlight before editing the plist, or it overwrites the changes on exit. After changing resolution, use Quit App on Desktop in Moonlight; a plain reconnect resumes the old session at the old size.
+
+## VR
+
+ALVR streams SteamVR to a Quest 3 plugged into the Mac by USB-C, so the headset doesn't depend on the local Wi-Fi:
+
+```
+gaming PC (ALVR streamer) ──Tailscale──▶ Mac (socat) ──USB (adb forward)──▶ Quest (ALVR client)
+```
+
+- `windows/alvr.ps1` installs the ALVR streamer in `C:\ALVR` with the Mac's Tailscale IP as a trusted client, the stream over TCP (adb only forwards TCP) and HEVC, plus a scheduled task `ALVR` that runs the dashboard in the desktop session. The dashboard opens and closes SteamVR with itself.
+- `gpc vr` checks the headset is connected, installs the matching ALVR app from `~/.local/share/gpc/alvr_client_android-v<version>.apk`, starts the PC if needed, starts ALVR over SSM, forwards 9943 (control) and 9944 (stream) into the headset, and relays them from the Mac's Tailscale IP. Ctrl-C closes ALVR and SteamVR; the PC keeps running.
+- One-time setup: enable developer mode on the Quest (Meta Horizon app), install SteamVR on the PC, run `alvr.ps1 -ClientIp <Mac Tailscale IP>` via SSM, `brew install socat android-platform-tools`, and download `alvr_client_android.apk` from the same ALVR release. Accept the USB debugging prompt in the headset on first connect.
+- ALVR's streamer and the Quest app must be the same version; update `$AlvrVersion` in `alvr.ps1` and the APK in `gpc` together.
+- Over TCP, packet loss stalls the stream instead of dropping a frame. If it hitches, lower the bitrate in the ALVR dashboard.
 
 ## Rebuild from scratch
 
