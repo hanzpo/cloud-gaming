@@ -65,6 +65,7 @@ To restore: create a volume from a snapshot in the instance's AZ, stop the insta
 ## Gotchas
 
 - **ViGEmBus refuses Windows Server.** Its MSI LaunchCondition blocks Server, and its updater scheduled task fails under SYSTEM. `setup.ps1` captures the MSI mid-install and reruns the installer with a transform that drops both.
+- **Software encoding after a cold boot.** Apollo probes encoders once when it starts. If that happens before the NVIDIA driver is up, it only sees the Microsoft Basic Render Driver, settles on libx264 and advertises H.264 only, and Moonlight falls back from AV1 to H.264. `gpc start` waits until Apollo advertises HEVC and otherwise restarts it through the web API (`/api/restart`).
 - **Empty stream window.** The NVIDIA driver exposes its own display, so Apollo captured an empty secondary screen. Fixed with `dd_configuration_option = ensure_only_display`.
 - **No audio device on EC2.** Steam no longer ships Steam Streaming Speakers in the client. Apollo installs them on the first stream; VB-Cable is installed so a playback device always exists.
 - **Controller not detected in Xbox mode.** Windows Server lacks the Xbox 360 driver, so the virtual pad shows error 28 (no driver). `setup.ps1` installs Microsoft's `xusb21` from the Update Catalog.
