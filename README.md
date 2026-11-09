@@ -38,7 +38,7 @@ Stored in `~/Library/Preferences/com.moonlight-stream.Moonlight.plist`. Don't co
 |---|---|---|
 | Resolution | 2560×1600 (16:10; 3024×1890 needs ~100 Mbps and a gigabit link) | `width`, `height` |
 | FPS | 120 | `fps` |
-| Bitrate | 40 Mbps, no auto-adjust (auto-adjust resets it whenever fps or resolution changes) | `bitrate`, `autoadjustbitrate` |
+| Bitrate | 80 Mbps, no auto-adjust (auto-adjust resets it whenever fps or resolution changes). Apollo takes its error correction (`fec_percentage = 50`) out of this total, which leaves about 39 Mbps for video | `bitrate`, `autoadjustbitrate` |
 | Codec | AV1 | `videocfg = 4` |
 | Window | Borderless fullscreen | `windowmode = 1` |
 | V-Sync, frame pacing | On. They cost about a frame of latency but hide the jitter on the home ISP's first hop (1–22ms while idle); frame pacing needs V-Sync | `vsync`, `framepacing` |
