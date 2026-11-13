@@ -53,6 +53,7 @@ Start-Process C:\gaming\Apollo.exe -ArgumentList '/S' -Wait
   'headless_mode = enabled'               # always stream Apollo's virtual display; the NVIDIA display is stuck at 1280x800
   'gamepad = x360'                        # Xbox controller so games (BMS) use XInput, even for a DS4-mode pad
   'fec_percentage = 50'                   # recover frames through the home ISP's intermittent packet loss
+  'nvenc_realtime_hags = disabled'        # with HAGS on, encode at high GPU priority; realtime hangs NVENC for good
 ) | Add-Content "$Apollo\config\sunshine.conf"
 New-NetFirewallRule -DisplayName 'Apollo TCP' -Direction Inbound -Protocol TCP -LocalPort 47984, 47989, 47990, 48010 -Action Allow | Out-Null
 New-NetFirewallRule -DisplayName 'Apollo UDP' -Direction Inbound -Protocol UDP -LocalPort 47998-48010 -Action Allow | Out-Null
@@ -131,6 +132,8 @@ Start-Process C:\gaming\Autologon64.exe -ArgumentList '/accepteula', 'Administra
 # --- Display ---------------------------------------------------------------------
 # Disable EC2's basic display adapter so games render on the NVIDIA GPU
 Get-PnpDevice -Class Display -FriendlyName 'Microsoft Basic Display Adapter' -Status OK | Disable-PnpDevice -Confirm:$false
+# HAGS on, so Apollo can drop from realtime to high GPU priority (needs a reboot)
+Set-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers' -Name HwSchMode -Type DWord -Value 2
 
 Write-Output 'SETUP DONE, rebooting'
 Stop-Transcript
